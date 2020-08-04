@@ -21,7 +21,7 @@ public class VanishCommand implements CommandExecutor
      * @param command the command
      * @param label unused
      * @param args unused
-     * @return
+     * @return returns true if the command is executed by a player, else it does nothing
      * a methetode in which we set up an command via where a player can become invisable or visable
      * depending on if they are already invisable or not.
      * If not we make then vissable or else we  make them invassable.
@@ -30,34 +30,46 @@ public class VanishCommand implements CommandExecutor
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
         //checks if the sender is a player and if it has the right permission note for  the use of this command.
-        if (sender instanceof Player || sender.hasPermission("Playervanish.vanish.use"))
+        if (sender instanceof Player)
         {
             Player player = (Player) sender;
-            if (VanishMethodes.vanishedplayers.contains(player))
+            if (player.hasPermission("PlayerVanish.vanish.use"))
             {
-                //Maakt de speler weer zichtbaar voor alle spelers die online zijn, en stuurt de speler een berichtje!
-                for (Player onlineplayers : Bukkit.getOnlinePlayers())
+                if (VanishMethodes.vanishedplayers.contains(player))
                 {
-                    onlineplayers.showPlayer(plugin, player);
+                    //Maakt de speler weer zichtbaar voor alle spelers die online zijn, en stuurt de speler een berichtje!
+                    for (Player onlineplayers : Bukkit.getOnlinePlayers())
+                    {
+                        onlineplayers.showPlayer(plugin, player);
+                    }
+                    player.sendMessage(plugin.getMessagePrefix() + ChatColor.WHITE + "Je bent weer zichtbaar geworden!");
+                    VanishMethodes.vanishedplayers.remove(player);
+                    VanishMethodes.vanishbar.removePlayer(player);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
                 }
-                player.sendMessage(plugin.getMessagePrefix() + ChatColor.WHITE + "Je bent weer zichtbaar geworden!");
-                VanishMethodes.vanishedplayers.remove(player);
-                VanishMethodes.vanishbar.removePlayer(player);
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
+                else
+                {
+                    //Maakt de speler ontzichtbaar voor alle spelers die online zijn, en stuurt de speler een berichtje.
+                    for (Player onlineplayers : Bukkit.getOnlinePlayers())
+                    {
+                        onlineplayers.hidePlayer(plugin, player);
+                    }
+                    player.sendMessage(plugin.getMessagePrefix() + ChatColor.WHITE + "Je bent ontzichtbaar geworden!");
+                    VanishMethodes.vanishedplayers.add(player);
+                    VanishMethodes.vanishbar.addPlayer(player);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
+                }
+
             }
             else
             {
-                //Maakt de speler ontzichtbaar voor alle spelers die online zijn, en stuurt de speler een berichtje.
-                for (Player onlineplayers : Bukkit.getOnlinePlayers())
-                {
-                    onlineplayers.hidePlayer(plugin, player);
-                }
-                player.sendMessage(plugin.getMessagePrefix() + ChatColor.WHITE + "Je bent ontzichtbaar geworden!");
-                VanishMethodes.vanishedplayers.add(player);
-                VanishMethodes.vanishbar.addPlayer(player);
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
+                player.sendMessage(plugin.getMessagePrefix() + ChatColor.RED + "Je hebt geen permission om deze command te gebruiken!");
             }
             return true;
+        }
+        else
+        {
+            sender.sendMessage(plugin.getMessagePrefix() + ChatColor.RED + "Alleen een speler kan dit command gebruiken!");
         }
         return false;
     }
