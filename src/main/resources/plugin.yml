@@ -1,0 +1,11 @@
+name: Playervanish
+version: ${project.version}
+main: nl.goowen.playervanish.Playervanish
+api-version: 1.13
+authors: [goowen]
+description: Een simpele vanish plugin die spelers voor andere spelers kan verbergen
+
+commands:
+  vanish:
+    description: makes you vanish from all other players on the server.
+    aliases: [v]
