@@ -2,10 +2,13 @@ package nl.goowen.playervanish.listeners;
 
 import nl.goowen.playervanish.Playervanish;
 import nl.goowen.playervanish.methodes.VanishMethodes;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import java.util.UUID;
 
 public class PlayerJoinListener implements Listener
 {
@@ -21,9 +24,9 @@ public class PlayerJoinListener implements Listener
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        for (Player vanished : VanishMethodes.vanishedplayers)
+        for (UUID vanished : VanishMethodes.vanishedplayers)
         {
-            player.hidePlayer(plugin, vanished);
+            player.hidePlayer(plugin, Bukkit.getPlayer(vanished));
         }
     }
 }

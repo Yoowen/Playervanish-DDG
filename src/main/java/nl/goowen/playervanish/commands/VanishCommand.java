@@ -10,6 +10,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class VanishCommand implements CommandExecutor
 {
 
@@ -33,9 +35,10 @@ public class VanishCommand implements CommandExecutor
         if (sender instanceof Player)
         {
             Player player = (Player) sender;
+            UUID playeruuid = player.getUniqueId();
             if (player.hasPermission("PlayerVanish.vanish.use"))
             {
-                if (VanishMethodes.vanishedplayers.contains(player))
+                if (VanishMethodes.vanishedplayers.contains(playeruuid))
                 {
                     //Maakt de speler weer zichtbaar voor alle spelers die online zijn, en stuurt de speler een berichtje!
                     for (Player onlineplayers : Bukkit.getOnlinePlayers())
@@ -43,9 +46,8 @@ public class VanishCommand implements CommandExecutor
                         onlineplayers.showPlayer(plugin, player);
                     }
                     player.sendMessage(plugin.getMessagePrefix() + ChatColor.WHITE + "Je bent weer zichtbaar geworden!");
-                    VanishMethodes.vanishedplayers.remove(player);
+                    VanishMethodes.vanishedplayers.remove(playeruuid);
                     VanishMethodes.vanishbar.removePlayer(player);
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
                 }
                 else
                 {
@@ -55,10 +57,10 @@ public class VanishCommand implements CommandExecutor
                         onlineplayers.hidePlayer(plugin, player);
                     }
                     player.sendMessage(plugin.getMessagePrefix() + ChatColor.WHITE + "Je bent ontzichtbaar geworden!");
-                    VanishMethodes.vanishedplayers.add(player);
+                    VanishMethodes.vanishedplayers.add(playeruuid);
                     VanishMethodes.vanishbar.addPlayer(player);
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
                 }
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
 
             }
             else
